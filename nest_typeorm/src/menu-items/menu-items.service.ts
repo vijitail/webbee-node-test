@@ -86,6 +86,29 @@ export class MenuItemsService {
     ]
   */
   async getMenuItems() {
-    throw new Error('TODO in task 3');
+    const menuItems = await this.menuItemRepository.find();
+    const menuItemMap: Record<string, MenuItem> = {};
+    const rootMenuItems: MenuItem[] = [];
+
+    menuItems.forEach((menuItem) => {
+      menuItemMap[menuItem.id] = menuItem;
+    });
+
+    menuItems.forEach((menuItem) => {
+      const parentId = menuItem.parentId;
+      if (parentId) {
+        const parentMenuItem = menuItemMap[parentId];
+        if (parentMenuItem) {
+          if (!parentMenuItem.children) {
+            parentMenuItem.children = [] as unknown as MenuItem[];
+          }
+          parentMenuItem.children.push(menuItem);
+        }
+      } else {
+        rootMenuItems.push(menuItem);
+      }
+    });
+
+    return rootMenuItems;
   }
 }
