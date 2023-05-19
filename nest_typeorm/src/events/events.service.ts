@@ -93,7 +93,15 @@ export class EventsService {
 
   @Get('events')
   async getEventsWithWorkshops() {
-    throw new Error('TODO task 1');
+    const events = await this.eventRepository.find({
+      relations: ['workshops'],
+      order: {
+        workshops: {
+          id: 'ASC',
+        },
+      },
+    });
+    return events;
   }
 
   /* TODO: complete getFutureEventWithWorkshops so that it returns events with workshops, that have not yet started
